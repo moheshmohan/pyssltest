@@ -3,7 +3,7 @@ A python multithreaded script to make use of Qualys ssllabs api to test SSL flaw
 
 The information on how to use and other stuff will be published on the below URL
 
-http://www.h4hacks.com/
+http://www.h4hacks.com/2015/06/qualys-ssl-labs-api-multithreaded.html
 
 you can read more about the SSL labs API here
 
