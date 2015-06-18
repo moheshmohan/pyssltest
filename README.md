@@ -5,6 +5,9 @@ The information on how to use and other stuff will be published on the below URL
 
 http://www.h4hacks.com/
 
+you can read more about the SSL labs API here
+
+https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs.md
 
 
 Copyright (c) Mohesh Mohan (h4hacks.com).
