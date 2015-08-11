@@ -56,7 +56,7 @@ def isURL(url):
 def parseresults(result,mainapp,returncode):
 	pdomain = mainapp
 	print "\nParsing : " + str(mainapp)
-	domain=ip=grade=sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='not tested'
+	domain=ip=grade=sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='not tested'
 	try:
 		#domain 
 		try:
@@ -260,15 +260,6 @@ def parseresults(result,mainapp,returncode):
 			#print str(e)
 			crime="Err"
 			pass
-		#eycert
-		try:
-			eycert="N"
-			if "EY Issuing" in result['endpoints'][0]['details']['cert']['issuerLabel']:
-				eycert ="Y"
-		except Exception,e:
-			#print str(e)
-			eycert="Err"
-			pass
 		#secreneg
 		try:
 			secreneg="N"
@@ -335,63 +326,63 @@ def parseresults(result,mainapp,returncode):
 		try:
 			if result['endpoints'][0]['statusMessage'] =="No secure protocols supported":
 				grade = "No SSL/TLS"
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='NA'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='NA'
 		except Exception,e:
 			pass
 		#No DNS
 		try:
 			if result['statusMessage'] =="Unable to resolve domain name":
 				grade = "No DNS"
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='NA'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='NA'
 		except Exception,e:
 			pass
 		#Unknown errors from server stupid stuff. not optimal need to work on this
 		try:
 			if "Unable" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
 		except Exception,e:
 			pass	
 		try:
 			if "RFC 1918" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
 		except Exception,e:
 			pass
 			
 		try:
 			if "Unexpected" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
 		except Exception,e:
 			pass	
 		try:
 			if "Internal error" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
 		except Exception,e:
 			pass
 		try:
 			if "Internal Error" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
 		except Exception,e:
 			pass
 			
 		try:
 			if result['status'] =="ERROR" and result['statusMessage'] !="Unable to resolve domain name":
 				grade = "Error from server, need manual tests"
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
 		except Exception,e:
 			pass		
 		
 		row = ""
-		row = pdomain,domain,ip,returncode,grade,sgrade,freak,poodletls,insecr,ccs,insecdh,ssl2,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,certchain,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y
+		row = pdomain,domain,ip,returncode,grade,sgrade,freak,poodletls,insecr,ccs,insecdh,ssl2,poodlessl,wrongd,certexp,selfcert,tls12,ssl3,rc4,certchain,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y
 		print "Parsed: " + str(mainapp)
 		return(row)
 	
 	except Exception,e:
-		row = pdomain,domain,'Failed',returncode,grade,sgrade,freak,poodletls,insecr,ccs,insecdh,ssl2,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,certchain,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y
+		row = pdomain,domain,'Failed',returncode,grade,sgrade,freak,poodletls,insecr,ccs,insecdh,ssl2,poodlessl,wrongd,certexp,selfcert,tls12,ssl3,rc4,certchain,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y
 		return(row)
 	
 newjob = False
