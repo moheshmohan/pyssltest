@@ -56,7 +56,7 @@ def isURL(url):
 def parseresults(result,mainapp,returncode):
 	pdomain = mainapp
 	print "\nParsing : " + str(mainapp)
-	domain=ip=grade=sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='not tested'
+	domain=ip=grade=sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y='not tested'
 	try:
 		#domain 
 		try:
@@ -91,6 +91,21 @@ def parseresults(result,mainapp,returncode):
 			#print str(e)
 			freak="JSON err"
 			pass
+		
+		
+		
+		#Logjam
+		try:
+			logjam= "N"
+			if result['endpoints'][0]['details']['logjam']== True:
+				logjam = "Y"
+		except Exception,e:
+			#print str(e)
+			logjam="JSON err"
+			pass
+		
+		
+		
 		#PoodleTLS
 		try:
 			poodlevar = result['endpoints'][0]['details']['poodleTls']
@@ -150,13 +165,24 @@ def parseresults(result,mainapp,returncode):
 		#ssl2
 		try:
 			ssl2= "N"
+			v2SuitesDisabled= "Y"
 			for protocol in result['endpoints'][0]['details']['protocols']:
 				if "SSL" in protocol['name'] and protocol['version']=="2.0":
 					ssl2 = "Y"
+					if protocol['v2SuitesDisabled']== True:
+						v2SuitesDisabled = "Y"
+					else:
+						v2SuitesDisabled = "N"
+					
+					
 		except Exception,e:
 			#print str(e)
 			ssl2="JSON err"
 			pass
+			
+			
+					
+			
 		#tls12
 		try:
 			tls12= "Y"
@@ -188,6 +214,21 @@ def parseresults(result,mainapp,returncode):
 			#print str(e)
 			rc4="JSON err"
 			pass
+			
+			
+			#rc4 Only
+		try:
+			rc4Onlyvar = result['endpoints'][0]['details']['rc4Only']
+			if rc4Onlyvar:
+				rc4Only ="Y"
+			else:
+				rc4Only = "N"
+		except Exception,e:
+			#print str(e)
+			rc4Only="JSON err"
+			pass
+			
+			
 		#weaks
 		try:
 			weaks="N"
@@ -216,7 +257,18 @@ def parseresults(result,mainapp,returncode):
 		except Exception,e:
 			#print str(e)
 			certchain="Err"
-			pass	
+			pass
+		#chainincomp
+		try:
+			chaininc="N"
+			certmsg1 = int(result['endpoints'][0]['details']['chain']['issues'])
+			chainp1 = testBit(certmsg1, 1)
+			if chainp1 != 0 :
+				chaininc ="Y"
+		except Exception,e:
+			#print str(e)
+			chaininc="Err"
+			pass
 		#wrongd
 		try:
 			wrongd="N"
@@ -259,6 +311,15 @@ def parseresults(result,mainapp,returncode):
 		except Exception,e:
 			#print str(e)
 			crime="Err"
+			pass
+		#eycert
+		try:
+			eycert="N"
+			if "EY Issuing" in result['endpoints'][0]['details']['cert']['issuerLabel']:
+				eycert ="Y"
+		except Exception,e:
+			#print str(e)
+			eycert="Err"
 			pass
 		#secreneg
 		try:
@@ -321,68 +382,96 @@ def parseresults(result,mainapp,returncode):
 			tls12y="JSON err"
 			pass
 				# write deal details to CSV
+		
+		try:
+			thumbp = result['endpoints'][0]['details']['cert']['sha1Hash']
+		except Exception,e:
+			#print str(e)
+			thumbp="JSON err"
+			pass	
+
+		try:
+			commonnames= ""
+			for common in result['endpoints'][0]['details']['cert']['commonNames']:
+				commonnames = " ".join((commonnames, common))
+		except Exception,e:
+			#print str(e)
+			commonnames="JSON err"
+			pass			
+
+		try:
+			altnames= ""
+			for alt in result['endpoints'][0]['details']['cert']['altNames']:
+				altnames = " ".join((altnames, alt))
+		except Exception,e:
+			#print str(e)
+			altnames="JSON err"
+			pass			
+		
+		
+		
 		# For error values
 		#No SSL
 		try:
 			if result['endpoints'][0]['statusMessage'] =="No secure protocols supported":
 				grade = "No SSL/TLS"
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='NA'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='NA'
 		except Exception,e:
 			pass
 		#No DNS
 		try:
 			if result['statusMessage'] =="Unable to resolve domain name":
 				grade = "No DNS"
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='NA'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='NA'
 		except Exception,e:
 			pass
 		#Unknown errors from server stupid stuff. not optimal need to work on this
 		try:
 			if "Unable" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
 		except Exception,e:
 			pass	
 		try:
 			if "RFC 1918" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=ertchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
 		except Exception,e:
 			pass
 			
 		try:
 			if "Unexpected" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
 		except Exception,e:
 			pass	
 		try:
 			if "Internal error" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
 		except Exception,e:
 			pass
 		try:
 			if "Internal Error" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
 		except Exception,e:
 			pass
 			
 		try:
 			if result['status'] =="ERROR" and result['statusMessage'] !="Unable to resolve domain name":
 				grade = "Error from server, need manual tests"
-				sgrade=freak=poodletls=insecr=ccs=insecdh=ssl2=poodlessl=weaks=tls12=ssl3=rc4=certchain=crime=wrongd=certexp=fwsec=weakkey=selfcert=secreneg=tls10=tls11=tls12y='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
 		except Exception,e:
 			pass		
 		
 		row = ""
-		row = pdomain,domain,ip,returncode,grade,sgrade,freak,poodletls,insecr,ccs,insecdh,ssl2,poodlessl,wrongd,certexp,selfcert,tls12,ssl3,rc4,certchain,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y
+		row = pdomain,domain,ip,'','','','','','','','','',returncode,grade,sgrade,'','','','',freak,logjam,poodletls,insecr,ccs,insecdh,ssl2,v2SuitesDisabled,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,rc4Only,certchain,chaininc,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y,'','','','','',thumbp,commonnames,altnames
 		print "Parsed: " + str(mainapp)
 		return(row)
 	
 	except Exception,e:
-		row = pdomain,domain,'Failed',returncode,grade,sgrade,freak,poodletls,insecr,ccs,insecdh,ssl2,poodlessl,wrongd,certexp,selfcert,tls12,ssl3,rc4,certchain,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y
+		row = pdomain,domain,'Failed','','','','','','','','','',returncode,grade,sgrade,'','','','',freak,logjam,poodletls,insecr,ccs,insecdh,ssl2,v2SuitesDisabled,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,rc4Only,certchain,chaininc,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y,'','','','','','','',''
 		return(row)
 	
 newjob = False
@@ -425,7 +514,7 @@ print "\n No of URLs is identified is " + str(len(mainapps))
 #print jobtrack
 print "\n No of domains is " + str(len(jobtrack))
 
-#raw_input("Press Enter to continue...")
+raw_input("Press Enter to continue...")
 
 apipath = "https://api.ssllabs.com/api/v2/"
 clientheaders = { "User-Agent": "pyssltest 1.3"}
@@ -550,7 +639,7 @@ for key in jobtrack:
 	else:
 		print str(key) + " is not added to queue as its invalid"
 
-for i in range(24):
+for i in range(100):
 	t1 = threading.Thread(target=runscan,args=(q,)) 
 	t1.daemon = True
 	t1.start() # start the thread
@@ -560,7 +649,7 @@ q.join()
 print "\nFinally"
 print jobtrack
 csvw = csv.writer(open(argsdict['output'], 'wb'))
-csvw.writerow(['Input_URL', 'Domain','IP','returncode', 'Grade','Secondary grade','Freak','Poodle_TLS','Insecure renegotiation','OpenSSL ccs','Insecure DH','SSL v2','Poodle_SSL','wrong domain',  'cert expired','Ey issued cert','self signed cert','No TLS1.2?', 'SSL v3', 'RC4', 'cert chain issue', 'CRIME',  'forward secrecy not supported?', 'weak private key?','weak signature','secure renegotiation', 'TLS 1.0','TLS 1.1','TLS 1.2' ])
+csvw.writerow(['Input_URL', 'Domain','IP','Common Name','Source','Date Added','Portfolio','sub portfolio','ELT', 'POC','IT Contact','Status','returncode', 'Grade','Secondary grade','Expected Remediation Date','Grade After Remediation','Actual Remediation Date','Actual Grade after Remediation','Freak','Logjam','Poodle_TLS','Insecure renegotiation','OpenSSL ccs','Insecure DH','SSL v2','SSLv2 SuitesDisabled','Poodle_SSL','wrong domain',  'cert expired','Ey issued cert','self signed cert','No TLS1.2?', 'SSL v3', 'RC4','rc4Only', 'cert chain issue','Cert chain incomplete', 'CRIME',  'forward secrecy not supported?', 'weak private key?','weak signature','secure renegotiation', 'TLS 1.0','TLS 1.1','TLS 1.2','Recommendation to raise score to A', 'Date Last scanned(Auto)','Date Manually validated','Comments', 'Audit teams Comments(New grade as on *)','Thumbprint','common names', 'alternate names' ])
 
 for app in mainapps:
 	try:
@@ -572,5 +661,5 @@ for app in mainapps:
 		csvw.writerow(row)			
 	except Exception,e:
 		print str(e)
-		csvw.writerow([app,curdom ,str(e),jobtrack[curdom], 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error', 'Error','Error','Error','Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error','Error','Error', 'Error','Error','Error' ])
+		csvw.writerow([app,curdom ,str(e),jobtrack[curdom], 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error', 'Error','Error','Error','Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error','Error','Error', 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error' ])
 		pass
