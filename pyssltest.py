@@ -382,14 +382,15 @@ def parseresults(result,mainapp,returncode):
 			tls12y="JSON err"
 			pass
 				# write deal details to CSV
-		
+		#thumb print
 		try:
 			thumbp = result['endpoints'][0]['details']['cert']['sha1Hash']
 		except Exception,e:
 			#print str(e)
 			thumbp="JSON err"
 			pass	
-
+			
+		#common names
 		try:
 			commonnames= ""
 			for common in result['endpoints'][0]['details']['cert']['commonNames']:
@@ -397,8 +398,9 @@ def parseresults(result,mainapp,returncode):
 		except Exception,e:
 			#print str(e)
 			commonnames="JSON err"
-			pass			
-
+			pass		
+			
+		#alternate names
 		try:
 			altnames= ""
 			for alt in result['endpoints'][0]['details']['cert']['altNames']:
@@ -408,6 +410,17 @@ def parseresults(result,mainapp,returncode):
 			altnames="JSON err"
 			pass			
 		
+		#drown
+		try:
+			drown="N"
+			if result['endpoints'][0]['details']['drownErrors'] == False and result['endpoints'][0]['details']['drownVulnerable'] == True :
+				drown ="Y"
+			elif result['endpoints'][0]['details']['drownErrors'] == True :
+				drown = "Assessment error"
+		except Exception,e:
+			print str(e)
+			drown="Err"
+			pass
 		
 		
 		# For error values
@@ -415,63 +428,69 @@ def parseresults(result,mainapp,returncode):
 		try:
 			if result['endpoints'][0]['statusMessage'] =="No secure protocols supported":
 				grade = "No SSL/TLS"
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='NA'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='NA'
 		except Exception,e:
 			pass
 		#No DNS
 		try:
 			if result['statusMessage'] =="Unable to resolve domain name":
 				grade = "No DNS"
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='NA'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='NA'
 		except Exception,e:
 			pass
 		#Unknown errors from server stupid stuff. not optimal need to work on this
 		try:
 			if "Unable" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
 		except Exception,e:
-			pass	
+			pass
+		try:
+			if "Failed" in result['endpoints'][0]['statusMessage']:
+				grade = result['endpoints'][0]['statusMessage']
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
+		except Exception,e:
+			pass			
 		try:
 			if "RFC 1918" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=ertchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=ertchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
 		except Exception,e:
 			pass
 			
 		try:
 			if "Unexpected" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
 		except Exception,e:
 			pass	
 		try:
 			if "Internal error" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
 		except Exception,e:
 			pass
 		try:
 			if "Internal Error" in result['endpoints'][0]['statusMessage']:
 				grade = result['endpoints'][0]['statusMessage']
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
 		except Exception,e:
 			pass
 			
 		try:
 			if result['status'] =="ERROR" and result['statusMessage'] !="Unable to resolve domain name":
 				grade = "Error from server, need manual tests"
-				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames='Error'
+				sgrade=freak=logjam=poodletls=insecr=ccs=insecdh=ssl2=v2SuitesDisabled=poodlessl=weaks=tls12=ssl3=rc4=rc4Only=certchain=chaininc=crime=wrongd=certexp=fwsec=weakkey=eycert=selfcert=secreneg=tls10=tls11=tls12y=thumbp=commonnames=altnames=drown='Error'
 		except Exception,e:
 			pass		
 		
 		row = ""
-		row = pdomain,domain,ip,'','','','','','','','','',returncode,grade,sgrade,'','','','',freak,logjam,poodletls,insecr,ccs,insecdh,ssl2,v2SuitesDisabled,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,rc4Only,certchain,chaininc,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y,'','','','','',thumbp,commonnames,altnames
+		row = pdomain,domain,ip,'','','','','','','','','',returncode,grade,sgrade,'','','','',drown,freak,logjam,poodletls,insecr,ccs,insecdh,ssl2,v2SuitesDisabled,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,rc4Only,certchain,chaininc,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y,'','','','','',thumbp,commonnames,altnames
 		print "Parsed: " + str(mainapp)
 		return(row)
 	
 	except Exception,e:
-		row = pdomain,domain,'Failed','','','','','','','','','',returncode,grade,sgrade,'','','','',freak,logjam,poodletls,insecr,ccs,insecdh,ssl2,v2SuitesDisabled,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,rc4Only,certchain,chaininc,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y,'','','','','','','',''
+		row = pdomain,domain,'Failed','','','','','','','','','',returncode,grade,sgrade,'','','','',drown,freak,logjam,poodletls,insecr,ccs,insecdh,ssl2,v2SuitesDisabled,poodlessl,wrongd,certexp,eycert,selfcert,tls12,ssl3,rc4,rc4Only,certchain,chaininc,crime,fwsec,weakkey,weaks,secreneg,tls10,tls11,tls12y,'','','','','','','',''
 		return(row)
 	
 newjob = False
@@ -649,7 +668,7 @@ q.join()
 print "\nFinally"
 print jobtrack
 csvw = csv.writer(open(argsdict['output'], 'wb'))
-csvw.writerow(['Input_URL', 'Domain','IP','Common Name','Source','Date Added','Portfolio','sub portfolio','ELT', 'POC','IT Contact','Status','returncode', 'Grade','Secondary grade','Expected Remediation Date','Grade After Remediation','Actual Remediation Date','Actual Grade after Remediation','Freak','Logjam','Poodle_TLS','Insecure renegotiation','OpenSSL ccs','Insecure DH','SSL v2','SSLv2 SuitesDisabled','Poodle_SSL','wrong domain',  'cert expired','Ey issued cert','self signed cert','No TLS1.2?', 'SSL v3', 'RC4','rc4Only', 'cert chain issue','Cert chain incomplete', 'CRIME',  'forward secrecy not supported?', 'weak private key?','weak signature','secure renegotiation', 'TLS 1.0','TLS 1.1','TLS 1.2','Recommendation to raise score to A', 'Date Last scanned(Auto)','Date Manually validated','Comments', 'Audit teams Comments(New grade as on *)','Thumbprint','common names', 'alternate names' ])
+csvw.writerow(['Input_URL', 'Domain','IP','Common Name','Source','Date Added','Portfolio','sub portfolio','ELT', 'POC','IT Contact','Status','returncode', 'Grade','Secondary grade','Expected Remediation Date','Grade After Remediation','Actual Remediation Date','Actual Grade after Remediation','Drown (Experimental)','Freak','Logjam','Poodle_TLS','Insecure renegotiation','OpenSSL ccs','Insecure DH','SSL v2','SSLv2 SuitesDisabled','Poodle_SSL','wrong domain',  'cert expired','Ey issued cert','self signed cert','No TLS1.2?', 'SSL v3', 'RC4','rc4Only', 'cert chain issue','Cert chain incomplete', 'CRIME',  'forward secrecy not supported?', 'weak private key?','weak signature','secure renegotiation', 'TLS 1.0','TLS 1.1','TLS 1.2','Recommendation to raise score to A', 'Date Last scanned(Auto)','Date Manually validated','Comments', 'Audit teams Comments(New grade as on *)','Thumbprint','common names', 'alternate names' ])
 
 for app in mainapps:
 	try:
@@ -661,5 +680,5 @@ for app in mainapps:
 		csvw.writerow(row)			
 	except Exception,e:
 		print str(e)
-		csvw.writerow([app,curdom ,str(e),jobtrack[curdom], 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error', 'Error','Error','Error','Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error','Error','Error', 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error' ])
+		csvw.writerow([app,curdom ,str(e),jobtrack[curdom], 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error', 'Error','Error','Error','Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error','Error','Error', 'Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error','Error' ])
 		pass
